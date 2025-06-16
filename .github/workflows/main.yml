@@ -51,7 +51,8 @@ jobs:
             __${{ github.event.commits[0].message }}__
 
             View changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
-            -------------------------------------------------------------------------
+            
+            ---------------------------------
 
       - name: Send PR notifications to Telegram
         if: github.event_name == 'pull_request'
@@ -65,7 +66,8 @@ jobs:
             __${{ github.event.commits[0].message }}__
 
             View PR: ${{ github.event.pull_request.html_url }}
-            -------------------------------------------------------------------------
+
+            ---------------------------------
 
       - name: Send Issue Comment notifications to Telegram
         if: github.event_name == 'issue_comment'
