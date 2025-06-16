@@ -45,14 +45,14 @@ jobs:
 
       - name: Send Push notifications to Telegram
         if: github.event_name == 'push'
-        run: curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} -d text="${MESSAGE}" -d message_thread_id=${{ secrets.MESSAGE_THREAD_ID }} >> /dev/null
+        run: curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} -d text="${MESSAGE}" -d message_thread_id=${{ secrets.MESSAGE_THREAD_ID }} -d "parse_mode=MarkdownV2" >> /dev/null
         env:
           # Message content
           MESSAGE: |
-            🤖 format`Push commit into ${{ steps.vars.outputs.branch_name }} ${bold`bold`}`;
+            🤖 *Push commit into ${{ steps.vars.outputs.branch_name }}*
             👉 ${{ github.repository }} by ${{ github.actor }}. 
 
-            __${{ github.event.commits[0].message }}__
+            _${{ github.event.commits[0].message }}_
 
             View changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
             
@@ -60,14 +60,14 @@ jobs:
 
       - name: Send PR notifications to Telegram
         if: github.event_name == 'pull_request'
-        run: curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} -d text="${MESSAGE}" -d message_thread_id=${{ secrets.MESSAGE_THREAD_ID }} >> /dev/null
+        run: curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} -d text="${MESSAGE}" -d message_thread_id=${{ secrets.MESSAGE_THREAD_ID }} -d "parse_mode=MarkdownV2" >> /dev/null
         env:
           # Message content
           MESSAGE: |
-            🤖 **${{ github.event_name }} ${{ github.event.action }}**
+            🤖 *${{ github.event_name }} ${{ github.event.action }}*
             👉 ${{ github.repository }} by ${{ github.actor }}. 
 
-            format`${{ steps.vars.outputs.headCommitMsg }} ${italic`italic`}`;
+            _${{ steps.vars.outputs.headCommitMsg }}_
 
             View PR: ${{ github.event.pull_request.html_url }}
 
@@ -75,7 +75,7 @@ jobs:
 
       - name: Send Issue Comment notifications to Telegram
         if: github.event_name == 'issue_comment'
-        run: curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} -d text="${MESSAGE}" -d message_thread_id=${{ secrets.MESSAGE_THREAD_ID }} >> /dev/null
+        run: curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} -d text="${MESSAGE}" -d message_thread_id=${{ secrets.MESSAGE_THREAD_ID }} -d "parse_mode=MarkdownV2" >> /dev/null
         env:
           # Message content
           MESSAGE: |
@@ -88,7 +88,7 @@ jobs:
 
       - name: Send PR Review Comment notifications to Telegram
         if: github.event_name == 'pull_request_review'
-        run: curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} -d text="${MESSAGE}" -d message_thread_id=${{ secrets.MESSAGE_THREAD_ID }} >> /dev/null
+        run: curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} -d text="${MESSAGE}" -d message_thread_id=${{ secrets.MESSAGE_THREAD_ID }} -d "parse_mode=MarkdownV2" >> /dev/null
         env:
           # Message content
           MESSAGE: |
