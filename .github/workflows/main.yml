@@ -52,7 +52,7 @@ jobs:
         env:
           # Message content
           MESSAGE: |
-            🤖 *Push commit into ${{ steps.vars.outputs.branch_name }}*
+            ✅ *Push commit into ${{ steps.vars.outputs.branch_name }}*
             👉 ${{ github.repository }} by ${{ github.actor }}. 
 
             ${{ steps.escape_commit.outputs.escaped_message }}
@@ -75,7 +75,7 @@ jobs:
         env:
           # Message content
           MESSAGE: |
-            🤖 *Pull Request ${{ github.event.action }}*
+            🔥 *Pull Request ${{ github.event.action }}*
             👉 ${{ github.repository }} by ${{ github.actor }}. 
 
             ${{ steps.escape_title.outputs.escaped_title }}
