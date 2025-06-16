@@ -59,7 +59,7 @@ jobs:
         env:
           # Message content
           MESSAGE: |
-            🤖 *${{ github.event_name }} ${{ github.event.action }}*
+            🤖 *Pull Request ${{ github.event.action }}*
             👉 ${{ github.repository }} by ${{ github.actor }}. 
 
             _${{ github.event.pull_request.title }}_
