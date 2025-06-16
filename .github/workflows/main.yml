@@ -19,21 +19,10 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
-    outputs:
-      head-commit-message: ${{ steps.get_head_commit_message.outputs.headCommitMsg }}
     steps:
       - name: Get current branch name
         id: vars
         run: echo ::set-output name=branch_name::${GITHUB_REF##*/}
-
-      - name: Get repo
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          
-      - name: Print head git commit message
-        id: get_head_commit_message
-        run: echo "::set-output name=headCommitMsg::$(git show -s --format=%s)"
 
       - name: Send Issues notifications to Telegram
         if: github.event_name == 'issues'
@@ -74,7 +63,7 @@ jobs:
             🤖 *${{ github.event_name }} ${{ github.event.action }}*
             👉 ${{ github.repository }} by ${{ github.actor }}. 
 
-            _${{ steps.get_head_commit_message.outputs.headCommitMsg }}_
+            _${{ github.event.pull_request.title }}_
 
             View PR: ${{ github.event.pull_request.html_url }}
 
