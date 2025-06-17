@@ -15,6 +15,8 @@ on:
   issue_comment:
   pull_request_review:
   pull_request_review_comment:
+  release:
+    types: [ published ]
 
 jobs:
   notify:
@@ -28,7 +30,6 @@ jobs:
         if: github.event_name == 'issues'
         run: curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} -d text="${MESSAGE}" -d message_thread_id=${{ secrets.MESSAGE_THREAD_ID }} -d parse_mode="MarkdownV2" >> /dev/null
         env:
-          # Message content
           MESSAGE: |
             🤖 The Issue [ ${{ github.event.issue.title }} ] 
             was ${{ github.event.action }} 
@@ -50,7 +51,6 @@ jobs:
         if: github.event_name == 'push'
         run: curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} -d text="${MESSAGE}" -d message_thread_id=${{ secrets.MESSAGE_THREAD_ID }} -d parse_mode="Markdown" >> /dev/null
         env:
-          # Message content
           MESSAGE: |
             ✅ *Push commit into ${{ steps.vars.outputs.branch_name }}*
             👉 ${{ github.repository }} by ${{ github.actor }}. 
@@ -73,7 +73,6 @@ jobs:
         if: github.event_name == 'pull_request'
         run: curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} -d text="${MESSAGE}" -d message_thread_id=${{ secrets.MESSAGE_THREAD_ID }} -d parse_mode="Markdown" >> /dev/null
         env:
-          # Message content
           MESSAGE: |
             🔥 *Pull Request ${{ github.event.action }}*
             👉 ${{ github.repository }} by ${{ github.actor }}. 
@@ -88,7 +87,6 @@ jobs:
         if: github.event_name == 'issue_comment'
         run: curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} -d text="${MESSAGE}" -d message_thread_id=${{ secrets.MESSAGE_THREAD_ID }} -d parse_mode="Markdown" >> /dev/null
         env:
-          # Message content
           MESSAGE: |
             🤖 ${{ github.event_name }} ${{ github.event.action }} 
             in ${{ github.repository }} by ${{ github.actor }}. 
@@ -101,7 +99,6 @@ jobs:
         if: github.event_name == 'pull_request_review'
         run: curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} -d text="${MESSAGE}" -d message_thread_id=${{ secrets.MESSAGE_THREAD_ID }} -d parse_mode="Markdown" >> /dev/null
         env:
-          # Message content
           MESSAGE: |
             🤖 ${{ github.event_name }} ${{ github.event.action }} 
             in ${{ github.repository }} by ${{ github.actor }}. 
@@ -109,3 +106,28 @@ jobs:
             Branch: ${{ steps.vars.outputs.branch_name }}
 
             View pull request: ${{ github.event.pull_request.html_url }}
+
+            ---------------------------------
+
+      - name: Escape release body
+        if: github.event_name == 'release'
+        id: escape_release
+        run: |
+          RELEASE_BODY="${{ github.event.release.body }}"
+          ESCAPED_BODY="${RELEASE_BODY//_/\\_}"
+          echo "escaped_body<<EOF" >> $GITHUB_OUTPUT
+          echo "${ESCAPED_BODY}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Send Release notifications to Telegram
+        if: github.event_name == 'release'
+        run: curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} -d text="${MESSAGE}" -d message_thread_id=${{ secrets.MESSAGE_THREAD_ID }} -d parse_mode="Markdown" >> /dev/null
+        env:
+          MESSAGE: |
+            🚀 *New Release Published:* ${{ github.event.release.name }}
+            📦 Tag: ${{ github.event.release.tag_name }}
+            By: ${{ github.actor }}
+            
+            ${{ steps.escape_release.outputs.escaped_body }}
+            
+            👉 View Release ${{ github.event.release.html_url }}
