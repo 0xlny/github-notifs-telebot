@@ -45,7 +45,7 @@ jobs:
         run: |
           COMMIT_MESSAGE="${{ github.event.commits[0].message }}"
           ESCAPED_MESSAGE="${COMMIT_MESSAGE//_/\\_}"
-          ESCAPED_MESSAGE="${ESCAPED_MESSAGE//\*/\\*}"
+          ESCAPED_MESSAGE="${ESCAPED_MESSAGE//\*/}"
           echo "escaped_message=${ESCAPED_MESSAGE}" >> $GITHUB_OUTPUT
 
       - name: Send Push notifications to Telegram
