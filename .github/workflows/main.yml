@@ -44,6 +44,7 @@ jobs:
         id: escape_commit
         run: |
           COMMIT_MESSAGE="${{ github.event.commits[0].message }}"
+          COMMIT_MESSAGE="$(echo "${COMMIT_MESSAGE}" | xargs)"
           ESCAPED_MESSAGE="${COMMIT_MESSAGE//_/\\_}"
           ESCAPED_MESSAGE="${ESCAPED_MESSAGE//\*/}"
           echo "escaped_message=${ESCAPED_MESSAGE}" >> $GITHUB_OUTPUT
