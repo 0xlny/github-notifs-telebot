@@ -116,8 +116,7 @@ jobs:
         id: escape_release
         run: |
           RELEASE_BODY="${{ github.event.release.body }}"
-          ESCAPED_BODY="$(echo "${RELEASE_BODY}" | xargs)"
-          ESCAPED_BODY="${ESCAPED_BODY//_/\\_}"
+          ESCAPED_BODY="${RELEASE_BODY//_/\\_}"
           ESCAPED_BODY="${ESCAPED_BODY//\*/}"
           echo "escaped_body<<EOF" >> $GITHUB_OUTPUT
           echo "${ESCAPED_BODY}" >> $GITHUB_OUTPUT
